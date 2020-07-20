@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
+import {HttpClient} from '@angular/common/http';
 declare var RealGridJS;
 
 @Component({
   selector: 'app-ledger',
   templateUrl: './ledger.component.html',
-  styleUrls: ['./ledger.component.css']
+  styleUrls: ['./ledger.component.css'],
 })
 export class LedgerComponent implements OnInit {
   gridView;
   gridDataProvider;
 
-  constructor() { }
+  constructor(private readonly http: HttpClient) {}
 
   ngOnInit(): void {
     this.gridView = new RealGridJS.GridView('realgrid'); // html 선언ID
@@ -174,6 +175,9 @@ export class LedgerComponent implements OnInit {
           'YYYY/MM/DD',
         )}, item : ${item}, note: ${note}, income : ${income}, expenditure : ${expenditure}, balance : ${balance}`,
       );
+    });
+    this.http.get('http://localhost:8080/test').subscribe((data) => {
+      console.log(data);
     });
   }
 }
