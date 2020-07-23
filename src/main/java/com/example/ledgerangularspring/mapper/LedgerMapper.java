@@ -8,4 +8,6 @@ import java.util.List;
 public interface LedgerMapper {
 
     void create(@Param("param") List<LedgerVO> param) throws Exception;
+
+    List<LedgerVO> read();
 }

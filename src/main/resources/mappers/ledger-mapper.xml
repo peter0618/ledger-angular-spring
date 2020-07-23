@@ -23,5 +23,9 @@
             ,#{item.balance}
         </foreach>
     </insert>
+    
+    <select id="read" resultType="com.example.ledgerangularspring.domain.LedgerVO">
+        SELECT * FROM ledger_master;
+    </select>
 
 </mapper>

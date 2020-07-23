@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -44,6 +45,15 @@ public class LedgerMapperTest {
         try {
             mapper.create(list);
         } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    @Test
+    public void readTest(){
+        try{
+            mapper.read();
+        } catch (Exception e){
             System.out.println(e.toString());
         }
     }

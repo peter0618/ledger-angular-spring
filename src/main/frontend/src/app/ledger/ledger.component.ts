@@ -176,7 +176,10 @@ export class LedgerComponent implements OnInit {
         )}, item : ${item}, note: ${note}, income : ${income}, expenditure : ${expenditure}, balance : ${balance}`,
       );
     });
-    this.http.get('/api/test').subscribe((data) => {
+    // this.http.get('/api/test').subscribe((data) => {
+    //   console.log(data);
+    // });
+    this.http.get('/api/monthly').subscribe((data) => {
       console.log(data);
     });
   }
