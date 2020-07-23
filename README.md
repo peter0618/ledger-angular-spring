@@ -14,3 +14,15 @@ spring.datasource.username=root
 spring.datasource.password=toor
 mybatis.mapper-locations=classpath:/mappers/*.xml
 ```
+# Getting started
+
+## Run
+
+#### frontend
+```bash
+# localhost:4200에 프론트앤드 dev server를 띄웁니다.
+# proxy.conf.json 파일 설정을 따라 동작합니다.
+src/main/frontend/npm run start:proxy
+```
+
+#### backend
