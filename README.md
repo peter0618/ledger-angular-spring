@@ -26,3 +26,4 @@ src/main/frontend/npm run start:proxy
 ```
 
 #### backend
+IDE에서 바로 실행(localhost:8080)하면 frontend 와 연결 됩니다.
