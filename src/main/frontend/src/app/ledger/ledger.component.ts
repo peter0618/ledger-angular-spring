@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
 import {HttpClient} from '@angular/common/http';
+import {Ledger} from './ledger.model';
 declare var RealGridJS;
 
 @Component({
@@ -124,40 +125,25 @@ export class LedgerComponent implements OnInit {
       },
     ]);
 
-    this.gridDataProvider.setRows([
-      {
-        date: '2020/07/01',
-        item: '이월잔액',
-        note: '이월잔액',
-        income: 381194,
-        expenditure: null,
-        balance: 381194,
-      },
-      {
-        date: '2020/07/01',
-        item: '예산입금',
-        note: '7월 예산 입금',
-        income: 250000,
-        expenditure: null,
-        balance: 631194,
-      },
-      {
-        date: '2020/07/01',
-        item: '예산 외 항목 지출',
-        note: '간식(라면24개)',
-        income: null,
-        expenditure: 14870,
-        balance: 616324,
-      },
-      {
-        date: '2020/07/02',
-        item: '찬양팀',
-        note: '회식비',
-        income: null,
-        expenditure: 50000,
-        balance: 566324,
-      },
-    ]);
+    this.http.get('/api/monthly').subscribe((data: [Ledger]) => {
+      const rows = [];
+      data.map((ledger) => {
+        const {id, stndDate, itemCode, itemName, note, income, expenditure, balance} = ledger;
+        rows.push({
+          id,
+          date: moment(stndDate).format('YYYY/MM/DD'),
+          item: itemName,
+          note,
+          income,
+          expenditure,
+          balance,
+        });
+      });
+      console.log(rows);
+
+      this.gridDataProvider.setRows(rows);
+    });
+
 
     this.gridView.setPasteOptions({
       enabled: true,
@@ -179,8 +165,5 @@ export class LedgerComponent implements OnInit {
     // this.http.get('/api/test').subscribe((data) => {
     //   console.log(data);
     // });
-    this.http.get('/api/monthly').subscribe((data) => {
-      console.log(data);
-    });
   }
 }

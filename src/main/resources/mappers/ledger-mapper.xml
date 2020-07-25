@@ -25,7 +25,18 @@
     </insert>
     
     <select id="read" resultType="com.example.ledgerangularspring.domain.LedgerVO">
-        SELECT * FROM ledger_master;
+        SELECT lm.id
+              ,lm.stnd_date
+              ,lm.item_code
+              ,cc.dtl_code_name AS itemName
+              ,lm.note
+              ,lm.income
+              ,lm.expenditure
+              ,lm.balance
+          FROM ledger_master lm
+          LEFT OUTER JOIN common_code cc
+                       ON cc.div_code = 'LEDGER01' AND lm.item_code = cc.dtl_code
+          ORDER BY lm.stnd_date, id ASC
     </select>
 
 </mapper>

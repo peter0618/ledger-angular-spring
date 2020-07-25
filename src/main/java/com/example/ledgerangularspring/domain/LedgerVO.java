@@ -9,6 +9,7 @@ public class LedgerVO {
     private int id;
     private Date stndDate;
     private String itemCode;
+    private String itemName;
     private String note;
     private int income;
     private int expenditure;
