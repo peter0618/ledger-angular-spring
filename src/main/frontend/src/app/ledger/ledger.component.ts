@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
 import {HttpClient} from '@angular/common/http';
 import {Ledger} from './ledger.model';
-declare var RealGridJS;
+import Grid from 'tui-grid';
+import {NumberUtil} from "../util/number.util";
 
 @Component({
   selector: 'app-ledger',
@@ -10,126 +11,75 @@ declare var RealGridJS;
   styleUrls: ['./ledger.component.css'],
 })
 export class LedgerComponent implements OnInit {
-  gridView;
-  gridDataProvider;
+  @ViewChild('grid', { static: true }) myGrid: ElementRef;
+
+  private grid: Grid;
+  private rows = [];
 
   constructor(private readonly http: HttpClient) {}
 
   ngOnInit(): void {
-    this.gridView = new RealGridJS.GridView('realgrid'); // html 선언ID
-    this.gridDataProvider = new RealGridJS.LocalDataProvider();
-    this.gridView.setDataSource(this.gridDataProvider);
-
-    this.gridDataProvider.setFields([
-      {
-        fieldName: 'date',
-        dataType: 'datetime',
-      },
-      {
-        fieldName: 'item',
-      },
-      {
-        fieldName: 'note',
-      },
-      {
-        fieldName: 'income',
-        dataType: 'number',
-      },
-      {
-        fieldName: 'expenditure',
-        dataType: 'number',
-      },
-      {
-        fieldName: 'balance',
-        dataType: 'number',
-        // calculateCallback: this.balanceCalculator,
-      },
-    ]);
-
-    this.gridView.setColumns([
-      {
-        name: 'date',
-        fieldName: 'date',
-        editable: true,
-        header: {
-          text: '일자',
+    // TOAST UI 기본 설정
+    this.grid = new Grid({
+      el: this.myGrid.nativeElement,
+      width: 1050,
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: '일자',
+          name: 'date',
+          width: 100,
+          editor: 'text'
         },
-        editor: {
-          type: 'date',
-          maxLength: 6,
-          yearNavigation: true,
+        {
+          header: '항목',
+          name: 'item',
+          width: 150,
+          editor: 'text'
         },
-        width: '100',
-      },
-      {
-        name: 'item',
-        fieldName: 'item',
-        editable: true,
-        header: {
-          text: '항목',
+        {
+          header: '비고',
+          name: 'note',
+          width: 500,
+          editor: 'text',
+          // onAfterChange(ev) {
+          //   console.log('Name after change:', ev);
+          // },
         },
-        type: 'data',
-        width: '150',
-      },
-      {
-        name: 'note',
-        fieldName: 'note',
-        editable: true,
-        header: {
-          text: '비고',
+        {
+          header: '수입',
+          name: 'income',
+          width: 100,
+          editor: 'text',
+          align: 'right',
+          formatter: NumberUtil.formatter,
         },
-        type: 'data',
-        width: '400',
-      },
-      {
-        name: 'income',
-        fieldName: 'income',
-        editable: true,
-        header: {
-          text: '수입',
+        {
+          header: '지출',
+          name: 'expenditure',
+          width: 100,
+          editor: 'text',
+          align: 'right',
+          formatter: NumberUtil.formatter,
         },
-        type: 'data',
-        width: '100',
-        styles: {
-          textAlignment: 'far',
-          numberFormat: '#,##0',
+        {
+          header: '잔고',
+          name: 'balance',
+          width: 100,
+          editor: 'text',
+          align: 'right',
+          formatter: NumberUtil.formatter,
         },
-      },
-      {
-        name: 'expenditure',
-        fieldName: 'expenditure',
-        editable: true,
-        header: {
-          text: '지출',
-        },
-        type: 'data',
-        width: '100',
-        styles: {
-          textAlignment: 'far',
-          numberFormat: '#,##0',
-        },
-      },
-      {
-        name: 'balance',
-        fieldName: 'balance',
-        editable: true,
-        header: {
-          text: '잔액',
-        },
-        type: 'data',
-        width: '100',
-        styles: {
-          textAlignment: 'far',
-          numberFormat: '#,##0',
-        },
-      },
-    ]);
+      ],
+    });
+    Grid.applyTheme('default'); // 'default' | 'striped' | 'clean'
 
     this.http.get('/api/monthly').subscribe((data: [Ledger]) => {
-      const rows = [];
+      // const rows = [];
       data.map((ledger) => {
         const {id, stndDate, itemCode, itemName, note, income, expenditure, balance} = ledger;
-        rows.push({
+        this.rows.push({
           id,
           date: moment(stndDate).format('YYYY/MM/DD'),
           item: itemName,
@@ -139,31 +89,15 @@ export class LedgerComponent implements OnInit {
           balance,
         });
       });
-      console.log(rows);
+      console.log(this.rows);
 
-      this.gridDataProvider.setRows(rows);
-    });
-
-
-    this.gridView.setPasteOptions({
-      enabled: true,
+      this.grid.resetData(this.rows);
     });
   }
 
-  onSave(): void {
-    console.log('onSave()');
-    this.gridView.commit();
-    const rows = this.gridDataProvider.getJsonRows(0, -1);
-    rows.map((row) => {
-      const {date, item, note, income, expenditure, balance} = row;
-      console.log(
-        `date : ${moment(date).format(
-          'YYYY/MM/DD',
-        )}, item : ${item}, note: ${note}, income : ${income}, expenditure : ${expenditure}, balance : ${balance}`,
-      );
-    });
-    // this.http.get('/api/test').subscribe((data) => {
-    //   console.log(data);
-    // });
+  onAdd() {
+    console.log('onAdd!!');
+    this.rows.push({});
+    this.grid.resetData(this.rows);
   }
 }
