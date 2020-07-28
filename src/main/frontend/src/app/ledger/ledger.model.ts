@@ -1,5 +1,6 @@
 export class Ledger {
     id: number;
+    sequence: number;
     stndDate: any;
     itemCode: string;
     itemName: string;

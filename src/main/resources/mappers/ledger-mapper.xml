@@ -26,6 +26,7 @@
     
     <select id="read" resultType="com.example.ledgerangularspring.domain.LedgerVO">
         SELECT lm.id
+              ,lm.sequence
               ,lm.stnd_date
               ,lm.item_code
               ,cc.dtl_code_name AS itemName
@@ -36,7 +37,7 @@
           FROM ledger_master lm
           LEFT OUTER JOIN common_code cc
                        ON cc.div_code = 'LEDGER01' AND lm.item_code = cc.dtl_code
-          ORDER BY lm.stnd_date, id ASC
+          ORDER BY lm.stnd_date, sequence ASC
     </select>
 
 </mapper>

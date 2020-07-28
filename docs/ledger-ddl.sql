@@ -21,3 +21,7 @@ CREATE TABLE `common_code` (
   PRIMARY KEY (`id`) USING BTREE
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='공통코드 테이블'
 ;
+
+-- 회계장부 마스터 테이블 컬럼 추가
+ALTER TABLE `ledger_master`
+ADD COLUMN `sequence` INT(11) NOT NULL DEFAULT 0 COMMENT '순서' AFTER `id`;
