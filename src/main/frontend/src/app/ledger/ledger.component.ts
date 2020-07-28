@@ -112,8 +112,15 @@ export class LedgerComponent implements OnInit {
     });
 
     this.grid.on('editingStart', ev => {
-      console.log('change focused cell!', ev);
-      // console.log(ev.columnName);
+      // console.log('change focused cell!', ev);
+
+      // TOAST UI 문서를 찾아봐도 뭔가 해당 이슈 해결이 어려워보여서 임시로 이렇게 해결함
+      setTimeout(() => {
+        let el = document.getElementsByClassName('tui-grid-editor-select-box-layer');
+        if(el.length !== 0){
+          el[0].classList.add('tui-grid-layer-editing');
+        }
+      }, 100);
     });
   }
 
