@@ -1,9 +1,10 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Ledger} from './ledger.model';
 import Grid from 'tui-grid';
 import {NumberUtil} from '../util/number.util';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-ledger',
@@ -16,10 +17,40 @@ export class LedgerComponent implements OnInit {
   private grid: Grid;
   private rows = [];
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient, private readonly router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     // TOAST UI 기본 설정
+    this.route.queryParams.subscribe((params) => {
+      if (Object.keys(params).length === 0) {
+        // query param 이 없는 경우에는 default 로 2020년 7월 데이터를 가져옵니다. TODO : 현 월을 default 로 설정하도록 변경되어야 합니다.
+        this.router.navigate(['/ledger'], {queryParams: {year: '2020', month: '07'}});
+      }
+
+      let httpParams = new HttpParams().set('year', params.year).set('month', params.month);
+
+      this.http.get('/api/monthly', {params: httpParams}).subscribe((data: [Ledger]) => {
+        // const rows = [];
+        data.map((ledger) => {
+          const {id, sequence, stndDate, itemCode, itemName, note, income, expenditure, balance} = ledger;
+          this.rows.push({
+            id,
+            sequence,
+            date: moment(stndDate).format('YYYY/MM/DD'),
+            // item: itemName,
+            item: itemCode,
+            note,
+            income,
+            expenditure,
+            balance,
+          });
+        });
+        // console.log(this.rows);
+
+        this.grid.resetData(this.rows);
+      });
+    });
+
     this.grid = new Grid({
       el: this.myGrid.nativeElement,
       width: 1100,
@@ -97,27 +128,6 @@ export class LedgerComponent implements OnInit {
     });
     Grid.applyTheme('default'); // 'default' | 'striped' | 'clean'
 
-    this.http.get('/api/monthly').subscribe((data: [Ledger]) => {
-      // const rows = [];
-      data.map((ledger) => {
-        const {id, sequence, stndDate, itemCode, itemName, note, income, expenditure, balance} = ledger;
-        this.rows.push({
-          id,
-          sequence,
-          date: moment(stndDate).format('YYYY/MM/DD'),
-          // item: itemName,
-          item: itemCode,
-          note,
-          income,
-          expenditure,
-          balance,
-        });
-      });
-      console.log(this.rows);
-
-      this.grid.resetData(this.rows);
-    });
-
     this.grid.on('editingStart', (ev) => {
       // console.log('change focused cell!', ev);
 
@@ -139,13 +149,13 @@ export class LedgerComponent implements OnInit {
       // console.log(index);
 
       this.rows.map((row) => {
-        if(row.sequence > index){
+        if (row.sequence > index) {
           row.sequence++;
         }
       });
 
       this.rows.splice(index, 0, {
-        sequence: index + 1
+        sequence: index + 1,
       });
 
       this.grid.resetData(this.rows);

@@ -9,15 +9,15 @@ import java.util.List;
 @Service
 public class LedgerService {
 
-    private LedgerMapper mapper;
+    private LedgerMapper ledgerMapper;
 
-    public LedgerService(LedgerMapper mapper) {
-        this.mapper = mapper;
+    public LedgerService(LedgerMapper ledgerMapper) {
+        this.ledgerMapper = ledgerMapper;
     }
 
-    public List<LedgerVO> getMonthly() {
-        List<LedgerVO> list = this.mapper.read();
-        return list;
+    public List<LedgerVO> getMonthly(String year, String month) {
+        String date = year + "-" + month;
+        return this.ledgerMapper.read(date);
     }
 }
 

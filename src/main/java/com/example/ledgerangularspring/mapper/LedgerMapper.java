@@ -9,5 +9,5 @@ public interface LedgerMapper {
 
     void create(@Param("param") List<LedgerVO> param) throws Exception;
 
-    List<LedgerVO> read();
+    List<LedgerVO> read(@Param("date") String date);
 }

@@ -24,7 +24,7 @@
         </foreach>
     </insert>
     
-    <select id="read" resultType="com.example.ledgerangularspring.domain.LedgerVO">
+    <select id="read" parameterType="String" resultType="com.example.ledgerangularspring.domain.LedgerVO">
         SELECT lm.id
               ,lm.sequence
               ,lm.stnd_date
@@ -37,6 +37,7 @@
           FROM ledger_master lm
           LEFT OUTER JOIN common_code cc
                        ON cc.div_code = 'LEDGER01' AND lm.item_code = cc.dtl_code
+         WHERE DATE_FORMAT(lm.stnd_date, '%Y-%m') = #{date}
           ORDER BY lm.stnd_date, sequence ASC
     </select>
 

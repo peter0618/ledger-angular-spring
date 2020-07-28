@@ -49,12 +49,12 @@ public class LedgerMapperTest {
         }
     }
 
-    @Test
-    public void readTest(){
-        try{
-            mapper.read();
-        } catch (Exception e){
-            System.out.println(e.toString());
-        }
-    }
+//    @Test
+//    public void readTest(){
+//        try{
+//            mapper.read();
+//        } catch (Exception e){
+//            System.out.println(e.toString());
+//        }
+//    }
 }
