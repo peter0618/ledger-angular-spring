@@ -6,6 +6,7 @@ import Grid from 'tui-grid';
 import {NumberUtil} from '../util/number.util';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GridEventName} from 'tui-grid/types/options';
+import {ledgerThemeOptions} from "./grid/options";
 
 @Component({
   selector: 'app-ledger',
@@ -128,7 +129,8 @@ export class LedgerComponent implements OnInit {
         },
       ],
     });
-    Grid.applyTheme('default'); // 'default' | 'striped' | 'clean'
+    
+    Grid.applyTheme('default', ledgerThemeOptions); // 'default' | 'striped' | 'clean'
 
     this.grid.on('editingStart', (ev) => {
       // console.log('change focused cell!', ev);
