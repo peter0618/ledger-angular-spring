@@ -15,7 +15,7 @@ export class LedgerComponent implements OnInit {
   @ViewChild('grid', {static: true}) myGrid: ElementRef;
 
   private grid: Grid;
-  private rows = [];
+  // private rows = [];
 
   constructor(private readonly http: HttpClient, private readonly router: Router, private route: ActivatedRoute) {}
 
@@ -30,10 +30,10 @@ export class LedgerComponent implements OnInit {
       let httpParams = new HttpParams().set('year', params.year).set('month', params.month);
 
       this.http.get('/api/monthly', {params: httpParams}).subscribe((data: [Ledger]) => {
-        // const rows = [];
+        const rows = [];
         data.map((ledger) => {
           const {id, sequence, stndDate, itemCode, itemName, note, income, expenditure, balance} = ledger;
-          this.rows.push({
+          rows.push({
             id,
             sequence,
             date: moment(stndDate).format('YYYY/MM/DD'),
@@ -47,15 +47,16 @@ export class LedgerComponent implements OnInit {
         });
         // console.log(this.rows);
 
-        this.grid.resetData(this.rows);
+        this.grid.resetData(rows);
       });
     });
 
     this.grid = new Grid({
       el: this.myGrid.nativeElement,
-      width: 1100,
+      width: 1120,
+      bodyHeight: 400,
       scrollX: false,
-      scrollY: false,
+      scrollY: true,
       columns: [
         {
           header: '순서',
@@ -141,29 +142,40 @@ export class LedgerComponent implements OnInit {
     });
   }
 
-  onAdd() {
+  onRowAdd() {
+    let matchers = /^[0-9]+$/;
     let inputValue = prompt('몇번째 순서에 행을 추가할까요?');
-    // TODO : idx 에 넣을 수 있는 값에 대한 validation 추가가 필요합니다.
-    if (inputValue !== null) {
-      let index = Number.parseInt(inputValue) - 1;
-      // console.log(index);
 
-      this.rows.map((row) => {
-        if (row.sequence > index) {
-          row.sequence++;
-        }
-      });
-
-      this.rows.splice(index, 0, {
-        sequence: index + 1,
-      });
-
-      this.grid.resetData(this.rows);
+    if (!inputValue) {
+      // 아무 입력없이 확인 눌렀을 때, 맨 아래 행 추가
+      this.grid.appendRow({sequence: this.grid.getRowCount() + 1});
+      return;
     }
-    // console.log(this.rows);
+
+    if (!inputValue.match(matchers)) {
+      alert('숫지만 입력 가능합니다!');
+      return;
+    }
+
+    if (Number.parseInt(inputValue) > this.grid.getRowCount() || Number.parseInt(inputValue) < 1) {
+      alert(`1 ~ ${this.grid.getRowCount()} 사이의 숫자를 입력하세요!`);
+      return;
+    }
+
+    let index = Number.parseInt(inputValue) - 1;
+    this.grid.appendRow({}, {at: index});
+
+    const rows: any[] = this.grid.getData();
+
+    rows.map((row, index) => {
+      row.sequence = index + 1;
+    });
+
+    this.grid.resetData(rows);
   }
 
   onSave() {
     console.log('onSave()!');
+    console.log(this.grid.getData());
   }
 }
