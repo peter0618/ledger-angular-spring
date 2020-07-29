@@ -5,6 +5,7 @@ import {Ledger} from './ledger.model';
 import Grid from 'tui-grid';
 import {NumberUtil} from '../util/number.util';
 import {ActivatedRoute, Router} from '@angular/router';
+import {GridEventName} from 'tui-grid/types/options';
 
 @Component({
   selector: 'app-ledger',
@@ -121,7 +122,7 @@ export class LedgerComponent implements OnInit {
           header: '잔고',
           name: 'balance',
           width: 100,
-          editor: 'text',
+          // editor: 'text',
           align: 'right',
           formatter: NumberUtil.formatter,
         },
@@ -140,8 +141,19 @@ export class LedgerComponent implements OnInit {
         }
       }, 10);
     });
+
+    this.grid.on('editingFinish', (ev: any) => {
+      const columnName = ev.columnName;
+      // 수입이나 지출 항목에 대한 편집이 끝나면 잔고를 다시 계산해줍니다.
+      if (columnName === 'income' || 'expenditure') {
+        this.onCalculate();
+      }
+    });
   }
 
+  /**
+   * 그리드의 행을 하나 추가합니다.
+   */
   onRowAdd() {
     let matchers = /^[0-9]+$/;
     let inputValue = prompt('몇번째 순서에 행을 추가할까요?');
@@ -177,5 +189,20 @@ export class LedgerComponent implements OnInit {
   onSave() {
     console.log('onSave()!');
     console.log(this.grid.getData());
+  }
+
+  /**
+   * 전체 행의 잔고를 다시 계산해줍니다.
+   */
+  onCalculate() {
+    const rows: any[] = this.grid.getData();
+    let prevBalance: number = 0;
+    // prevBalance 의 default 값이 0 으로 설정되어 있기 때문에 첫번째 잔고는 "수입 - 지출"이 계산됩니다.
+    rows.map((row) => {
+      row.balance = prevBalance + Number.parseInt(row.income) - Number.parseInt(row.expenditure);
+      prevBalance = row.balance;
+    });
+
+    this.grid.resetData(rows);
   }
 }
