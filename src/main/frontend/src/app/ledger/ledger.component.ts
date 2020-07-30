@@ -136,18 +136,20 @@ export class LedgerComponent implements OnInit {
       // console.log('change focused cell!', ev);
 
       // TOAST UI 문서를 찾아봐도 뭔가 해당 이슈 해결이 어려워보여서 임시로 이렇게 해결함
-      setTimeout(() => {
-        let el = document.getElementsByClassName('tui-grid-editor-select-box-layer');
-        if (el.length !== 0) {
-          el[0].classList.add('tui-grid-layer-editing');
-        }
-      }, 10);
+      // setTimeout(() => {
+      //   let el = document.getElementsByClassName('tui-grid-editor-select-box-layer');
+      //   if (el.length !== 0) {
+      //     el[0].classList.add('tui-grid-layer-editing');
+      //   }
+      // }, 10);
     });
 
     this.grid.on('editingFinish', (ev: any) => {
+
       const columnName = ev.columnName;
-      // 수입이나 지출 항목에 대한 편집이 끝나면 잔고를 다시 계산해줍니다.
-      if (columnName === 'income' || 'expenditure') {
+      console.log(`columnName : ${columnName}`);
+      // // 수입이나 지출 항목에 대한 편집이 끝나면 잔고를 다시 계산해줍니다.
+      if (columnName === 'income' || columnName === 'expenditure') {
         this.onCalculate();
       }
     });
