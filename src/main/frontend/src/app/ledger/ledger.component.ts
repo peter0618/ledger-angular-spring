@@ -201,6 +201,13 @@ export class LedgerComponent implements OnInit {
     let prevBalance: number = 0;
     // prevBalance 의 default 값이 0 으로 설정되어 있기 때문에 첫번째 잔고는 "수입 - 지출"이 계산됩니다.
     rows.map((row) => {
+      if(!row.income){
+        row.income = 0;
+      }
+      if(!row.expenditure){
+        row.expenditure = 0;
+      }
+
       row.balance = prevBalance + Number.parseInt(row.income) - Number.parseInt(row.expenditure);
       prevBalance = row.balance;
     });
