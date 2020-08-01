@@ -2,3 +2,14 @@
   left: 155px;
   top: 34px;
 }
+
+:host ::ng-deep .tui-grid-editor-select-box-layer {
+  position: absolute;
+  background: #fff;
+  z-index: 15;
+  padding: 0 5px;
+  border-style: solid;
+  border-width: 1px;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
