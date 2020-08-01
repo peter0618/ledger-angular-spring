@@ -6,7 +6,7 @@ import Grid from 'tui-grid';
 import {NumberUtil} from '../util/number.util';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GridEventName} from 'tui-grid/types/options';
-import {ledgerThemeOptions} from "./grid/options";
+import {ledgerThemeOptions} from './grid/options';
 
 @Component({
   selector: 'app-ledger',
@@ -129,12 +129,11 @@ export class LedgerComponent implements OnInit {
         },
       ],
     });
-    
+
     Grid.applyTheme('default', ledgerThemeOptions); // 'default' | 'striped' | 'clean'
 
     this.grid.on('editingStart', (ev) => {
       // console.log('change focused cell!', ev);
-
       // TOAST UI 문서를 찾아봐도 뭔가 해당 이슈 해결이 어려워보여서 임시로 이렇게 해결함
       // setTimeout(() => {
       //   let el = document.getElementsByClassName('tui-grid-editor-select-box-layer');
@@ -145,7 +144,6 @@ export class LedgerComponent implements OnInit {
     });
 
     this.grid.on('editingFinish', (ev: any) => {
-
       const columnName = ev.columnName;
       console.log(`columnName : ${columnName}`);
       // // 수입이나 지출 항목에 대한 편집이 끝나면 잔고를 다시 계산해줍니다.
@@ -193,6 +191,8 @@ export class LedgerComponent implements OnInit {
   onSave() {
     console.log('onSave()!');
     console.log(this.grid.getData());
+
+    this.http.post('/api/monthly', this.grid.getData()).subscribe((data) => console.log(data));
   }
 
   /**
@@ -203,10 +203,10 @@ export class LedgerComponent implements OnInit {
     let prevBalance: number = 0;
     // prevBalance 의 default 값이 0 으로 설정되어 있기 때문에 첫번째 잔고는 "수입 - 지출"이 계산됩니다.
     rows.map((row) => {
-      if(!row.income){
+      if (!row.income) {
         row.income = 0;
       }
-      if(!row.expenditure){
+      if (!row.expenditure) {
         row.expenditure = 0;
       }
 
