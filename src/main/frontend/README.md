@@ -2,6 +2,30 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.1.
 
+## frontend
+
+make sure your node version should be v10.x
+npm i -g gulp
+npm install semantic-ui --save
+
+```json
+
+In your Angular project :
+
+npm install semantic-ui --save
+
+angular.json file :
+
+{
+  ...
+  "styles": [
+    "node_modules/semantic-ui/dist/semantic.min.css",
+    "src/styles.css"
+  ],
+  ...
+}
+```
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
