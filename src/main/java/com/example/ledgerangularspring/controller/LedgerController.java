@@ -25,7 +25,7 @@ public class LedgerController {
 
     @PostMapping("")
     private EmptyResponseWrapper insertMonthly(@RequestBody List<LedgerVO> ledgerVOs){
-        System.out.println("insertMonthly(ledgerVOs: " + ledgerVOs.toString() + ")");
+//        System.out.println("insertMonthly(ledgerVOs: " + ledgerVOs.toString() + ")");
         return this.ledgerService.insertMonthly(ledgerVOs);
     }
 }

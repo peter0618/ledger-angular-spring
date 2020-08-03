@@ -3,17 +3,23 @@ package com.example.ledgerangularspring.service;
 import com.example.ledgerangularspring.domain.LedgerVO;
 import com.example.ledgerangularspring.mapper.LedgerMapper;
 import com.example.ledgerangularspring.model.wrapper.EmptyResponseWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class LedgerService {
 
     private LedgerMapper ledgerMapper;
 
-    public LedgerService(LedgerMapper ledgerMapper) {
+    private final ObjectMapper objectMapper;
+
+    public LedgerService(LedgerMapper ledgerMapper, ObjectMapper objectMapper) {
         this.ledgerMapper = ledgerMapper;
+        this.objectMapper = objectMapper;
     }
 
     public List<LedgerVO> getMonthly(String year, String month) {
@@ -22,18 +28,24 @@ public class LedgerService {
     }
 
     public EmptyResponseWrapper insertMonthly(List<LedgerVO> ledgerVOs) {
-        // TODO : data insert 로직 처리 ( insert 와 update 를 따로 구현하려 했으나, 동시에 하는 것도 괜찮아보임
-        for(LedgerVO ledgerVO : ledgerVOs){
-            if(ledgerVO.getId() != 0){
-                System.out.println("id 있음!!");
+        long now = System.currentTimeMillis();
+        SimpleDateFormat YMDFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            // TODO : 이런식으로 말고 list 자체를 mybatis mapper 에 넘겨서 foreach 로 처리하는 방법은 적용 안되는지 점검이 필요합니다.
+            for(LedgerVO ledgerVO : ledgerVOs){
+                String formattedDate = YMDFormat.format(ledgerVO.getStndDate());
+                Map<String, String> param = objectMapper.convertValue(ledgerVO, Map.class);
+                param.put("stndDate", formattedDate); // mysql DB에 date를 저장하기 위해서 YYYY-MM-DD formatting 을 적용합니다.
 
-            } else {
-
-                System.out.println("id 없음!!");
+                System.out.println(param);
+                int cnt = this.ledgerMapper.insertLedger(param);
+                System.out.println("cnt : " + cnt);
             }
+        } catch (Exception e){
+            return EmptyResponseWrapper.create().fail().code("500").message(e.getMessage());
         }
 
-        return EmptyResponseWrapper.create();
+        return EmptyResponseWrapper.create().leadTime(System.currentTimeMillis() - now);
     }
 }
 
