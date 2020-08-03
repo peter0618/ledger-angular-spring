@@ -41,4 +41,35 @@
           ORDER BY lm.stnd_date, sequence ASC
     </select>
 
+    <insert id="insertLedger" parameterType="hashMap">
+        INSERT INTO ledger_master (
+         id
+        ,sequence
+        ,stnd_date
+        ,item_code
+        ,note
+        ,income
+        ,expenditure
+        ,balance
+        )
+        VALUES
+        (
+         #{param.id}
+        ,#{param.sequence}
+        ,#{param.stndDate}
+        ,#{param.itemCode}
+        ,#{param.note}
+        ,#{param.income}
+        ,#{param.expenditure}
+        ,#{param.balance}
+        )
+        ON DUPLICATE KEY UPDATE
+         sequence    = #{param.sequence}
+        ,stnd_date   = #{param.stndDate}
+        ,item_code   = #{param.itemCode}
+        ,note        = #{param.note}
+        ,income      = #{param.income}
+        ,expenditure = #{param.expenditure}
+        ,balance     = #{param.balance}
+    </insert>
 </mapper>

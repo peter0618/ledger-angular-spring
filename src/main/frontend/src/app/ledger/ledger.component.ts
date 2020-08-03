@@ -190,9 +190,26 @@ export class LedgerComponent implements OnInit {
 
   onSave() {
     console.log('onSave()!');
-    console.log(this.grid.getData());
+    // console.log(this.grid.getData());
 
-    this.http.post('/api/monthly', this.grid.getData()).subscribe((data) => console.log(data));
+    const postData = this.grid.getData().map((data: any) => {
+      console.log(typeof data.date);
+      return {
+        id: data.id,
+        sequence: data.sequence,
+        stndDate: moment(data.date, 'YYYY/MM/DD'), // 날짜 변환....
+        itemCode: data.item,
+        // itemName:,
+        note: data.note,
+        income: data.income,
+        expenditure: data.expenditure,
+        balance: data.balance,
+      };
+    });
+
+    console.log(postData);
+
+    this.http.post('/api/monthly', postData).subscribe((data) => console.log(data));
   }
 
   /**
