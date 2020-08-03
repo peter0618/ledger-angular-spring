@@ -17,6 +17,8 @@ export class LedgerComponent implements OnInit {
   @ViewChild('grid', {static: true}) myGrid: ElementRef;
 
   private grid: Grid;
+  private year;
+  private month;
   // private rows = [];
 
   constructor(private readonly http: HttpClient, private readonly router: Router, private route: ActivatedRoute) {}
@@ -30,6 +32,8 @@ export class LedgerComponent implements OnInit {
       }
 
       let httpParams = new HttpParams().set('year', params.year).set('month', params.month);
+      this.year = params.year;
+      this.month = params.month;
 
       this.http.get('/api/monthly', {params: httpParams}).subscribe((data: [Ledger]) => {
         const rows = [];
@@ -93,6 +97,9 @@ export class LedgerComponent implements OnInit {
               ],
             },
           },
+          copyOptions: {
+            useListItemText: true,
+          }
         },
         {
           header: '비고',
@@ -157,14 +164,20 @@ export class LedgerComponent implements OnInit {
    * 그리드의 행을 하나 추가합니다.
    */
   onRowAdd() {
-    let matchers = /^[0-9]+$/;
     let inputValue = prompt('몇번째 순서에 행을 추가할까요?');
 
-    if (!inputValue) {
+    if (inputValue === null) {
+      // esc 키를 눌렀을 때는 null 을 받습니다. esc 키는 보통 '취소'의 의미로 사용되므로, esc 키를 눌렀을 때는 아무 동작도 하지 않고 종료합니다.
+      return;
+    }
+
+    if (inputValue === '') {
       // 아무 입력없이 확인 눌렀을 때, 맨 아래 행 추가
       this.grid.appendRow({sequence: this.grid.getRowCount() + 1});
       return;
     }
+
+    let matchers = /^[0-9]+$/;
 
     if (!inputValue.match(matchers)) {
       alert('숫지만 입력 가능합니다!');
@@ -210,6 +223,7 @@ export class LedgerComponent implements OnInit {
     console.log(postData);
 
     this.http.post('/api/monthly', postData).subscribe((data) => console.log(data));
+    // TODO : data 저장 성공 여부에 대한 메시지를 보여주는 로직이 추가되어야 합니다.
   }
 
   /**
