@@ -13,3 +13,18 @@
   white-space: nowrap;
   box-sizing: border-box;
 }
+
+:host ::ng-deep .tui-grid-container{
+  margin: auto;
+  width: 50%;
+}
+
+#gnb{
+  width: 1120px;
+  margin: auto;
+}
+
+#bottom-buttons{
+  width: 1120px;
+  margin: auto;
+}
