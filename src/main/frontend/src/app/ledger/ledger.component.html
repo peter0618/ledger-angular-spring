@@ -6,7 +6,7 @@
 
 <div class="ui three column grid" id="gnb">
     <div class="column">
-        <button class="ui labeled icon button">
+        <button class="ui labeled icon button" (click)="onBack()">
             <i class="left chevron icon"></i>
             Back
         </button>
@@ -18,7 +18,7 @@
     </div>
     <div class="column">
         <div style="display: flex; justify-content: flex-end;">
-            <button class="ui labeled icon button">
+            <button class="ui labeled icon button" (click)="onForward()">
                 <i class="right chevron icon"></i>
                 Forward
             </button>

@@ -5,7 +5,6 @@ import {Ledger} from './ledger.model';
 import Grid from 'tui-grid';
 import {NumberUtil} from '../util/number.util';
 import {ActivatedRoute, Router} from '@angular/router';
-import {GridEventName} from 'tui-grid/types/options';
 import {ledgerThemeOptions} from './grid/options';
 
 @Component({
@@ -27,8 +26,12 @@ export class LedgerComponent implements OnInit {
     // TOAST UI 기본 설정
     this.route.queryParams.subscribe((params) => {
       if (Object.keys(params).length === 0) {
-        // query param 이 없는 경우에는 default 로 2020년 7월 데이터를 가져옵니다. TODO : 현 월을 default 로 설정하도록 변경되어야 합니다.
-        this.router.navigate(['/ledger'], {queryParams: {year: '2020', month: '07'}});
+        // query param 이 없는 경우에는 default 로 현재 날짜 기준 년/월을 셋팅하여 라우팅합니다.
+        const today = moment();
+        const year = today.format('YYYY');
+        const month = today.format('MM');
+
+        this.router.navigate(['/ledger'], {queryParams: {year: year, month: month}});
       }
 
       let httpParams = new HttpParams().set('year', params.year).set('month', params.month);
@@ -99,7 +102,7 @@ export class LedgerComponent implements OnInit {
           },
           copyOptions: {
             useListItemText: true,
-          }
+          },
         },
         {
           header: '비고',
@@ -246,5 +249,19 @@ export class LedgerComponent implements OnInit {
     });
 
     this.grid.resetData(rows);
+  }
+
+  onBack() {
+    const monthAgo = moment(`${this.year}-${this.month}`, 'YYYY-MM').subtract(1, 'months');
+    const year = monthAgo.format('YYYY');
+    const month = monthAgo.format('MM');
+    this.router.navigate(['/ledger'], {queryParams: {year: year, month: month}});
+  }
+
+  onForward() {
+    const monthAgo = moment(`${this.year}-${this.month}`, 'YYYY-MM').add(1, 'months');
+    const year = monthAgo.format('YYYY');
+    const month = monthAgo.format('MM');
+    this.router.navigate(['/ledger'], {queryParams: {year: year, month: month}});
   }
 }
