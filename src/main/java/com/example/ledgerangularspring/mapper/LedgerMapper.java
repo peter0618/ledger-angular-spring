@@ -4,7 +4,6 @@ import com.example.ledgerangularspring.domain.LedgerVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface LedgerMapper {
 
@@ -12,5 +11,5 @@ public interface LedgerMapper {
 
     List<LedgerVO> read(@Param("date") String date);
 
-    int insertLedger(@Param("param") Map<String, String> param);
+    int insertLedger(@Param("param") List<LedgerVO> param);
 }

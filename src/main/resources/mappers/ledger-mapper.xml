@@ -41,7 +41,7 @@
           ORDER BY lm.stnd_date, sequence ASC
     </select>
 
-    <insert id="insertLedger" parameterType="hashMap">
+    <insert id="insertLedger" parameterType="java.util.List">
         INSERT INTO ledger_master (
          id
         ,sequence
@@ -53,23 +53,23 @@
         ,balance
         )
         VALUES
-        (
-         #{param.id}
-        ,#{param.sequence}
-        ,#{param.stndDate}
-        ,#{param.itemCode}
-        ,#{param.note}
-        ,#{param.income}
-        ,#{param.expenditure}
-        ,#{param.balance}
-        )
+        <foreach collection="param" item="item" open="(" separator="),("  close=")">
+             #{item.id}
+            ,#{item.sequence}
+            ,#{item.stndDate}
+            ,#{item.itemCode}
+            ,#{item.note}
+            ,#{item.income}
+            ,#{item.expenditure}
+            ,#{item.balance}
+        </foreach>
         ON DUPLICATE KEY UPDATE
-         sequence    = #{param.sequence}
-        ,stnd_date   = #{param.stndDate}
-        ,item_code   = #{param.itemCode}
-        ,note        = #{param.note}
-        ,income      = #{param.income}
-        ,expenditure = #{param.expenditure}
-        ,balance     = #{param.balance}
+         sequence    = values(sequence)
+        ,stnd_date   = values(stnd_date)
+        ,item_code   = values(item_code)
+        ,note        = values(note)
+        ,income      = values(income)
+        ,expenditure = values(expenditure)
+        ,balance     = values(balance)
     </insert>
 </mapper>
