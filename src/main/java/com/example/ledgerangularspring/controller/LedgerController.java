@@ -17,15 +17,21 @@ public class LedgerController {
         this.ledgerService = ledgerService;
     }
 
+    // TODO : ListResponseWrapper 로 인터페이스를 리팩토링해야 합니다.
     @GetMapping("")
     private List<LedgerVO> getMonthly(@RequestParam String year, @RequestParam String month){
         System.out.println("getMonthly(" + year + ", " + month + ")");
         return this.ledgerService.getMonthly(year, month);
     }
 
+    /**
+     * ledger_master 테이블에 row 를 bulk 로 저장합니다.
+     * @param ledgerVOs
+     * @return
+     */
     @PostMapping("")
     private EmptyResponseWrapper insertMonthly(@RequestBody List<LedgerVO> ledgerVOs){
-//        System.out.println("insertMonthly(ledgerVOs: " + ledgerVOs.toString() + ")");
+        System.out.println("insertMonthly(ledgerVOs: " + ledgerVOs.toString() + ")");
         return this.ledgerService.insertMonthly(ledgerVOs);
     }
 }
