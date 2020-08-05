@@ -259,9 +259,9 @@ export class LedgerComponent implements OnInit {
   }
 
   onForward() {
-    const monthAgo = moment(`${this.year}-${this.month}`, 'YYYY-MM').add(1, 'months');
-    const year = monthAgo.format('YYYY');
-    const month = monthAgo.format('MM');
+    const monthAfter = moment(`${this.year}-${this.month}`, 'YYYY-MM').add(1, 'months');
+    const year = monthAfter.format('YYYY');
+    const month = monthAfter.format('MM');
     this.router.navigate(['/ledger'], {queryParams: {year: year, month: month}});
   }
 }
