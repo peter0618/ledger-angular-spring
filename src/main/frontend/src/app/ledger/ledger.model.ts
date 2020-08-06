@@ -9,3 +9,12 @@ export class Ledger {
     expenditure?: number;
     balance?: number;
 }
+
+export class CommonCode {
+    id: number;
+    divCode: string;
+    divCodeName: string;
+    dtlCode: string;
+    dtlCodeName: string;
+    note?: string;
+}

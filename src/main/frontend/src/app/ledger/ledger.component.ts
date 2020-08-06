@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {Ledger} from './ledger.model';
+import {CommonCode, Ledger} from './ledger.model';
 import Grid from 'tui-grid';
 import {NumberUtil} from '../util/number.util';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -22,7 +22,10 @@ export class LedgerComponent implements OnInit {
 
   constructor(private readonly http: HttpClient, private readonly router: Router, private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+
+    await this.initGrid();
+
     // TOAST UI 기본 설정
     this.route.queryParams.subscribe((params) => {
       if (Object.keys(params).length === 0) {
@@ -32,6 +35,7 @@ export class LedgerComponent implements OnInit {
         const month = today.format('MM');
 
         this.router.navigate(['/ledger'], {queryParams: {year: year, month: month}});
+        return;
       }
 
       let httpParams = new HttpParams().set('year', params.year).set('month', params.month);
@@ -54,10 +58,20 @@ export class LedgerComponent implements OnInit {
             balance,
           });
         });
-        // console.log(this.rows);
 
         this.grid.resetData(rows);
       });
+    });
+  }
+
+  async initGrid() {
+    let listItems = [];
+
+    let res: any = await this.http.get('/api/common-codes/LEDGER01').toPromise();
+    const data: [CommonCode] = res.data;
+    data.map((commonCode) => {
+      console.log(commonCode.dtlCode, commonCode.dtlCodeName);
+      listItems.push({text: commonCode.dtlCodeName, value: commonCode.dtlCode});
     });
 
     this.grid = new Grid({
@@ -92,12 +106,7 @@ export class LedgerComponent implements OnInit {
           editor: {
             type: 'select',
             options: {
-              listItems: [
-                {text: '이월잔액', value: '00'},
-                {text: '예산입금', value: '01'},
-                {text: '예산 외 항목 지출', value: '02'},
-                {text: '찬양팀', value: '03'},
-              ],
+              listItems: listItems,
             },
           },
           copyOptions: {
@@ -142,20 +151,9 @@ export class LedgerComponent implements OnInit {
 
     Grid.applyTheme('default', ledgerThemeOptions); // 'default' | 'striped' | 'clean'
 
-    this.grid.on('editingStart', (ev) => {
-      // console.log('change focused cell!', ev);
-      // TOAST UI 문서를 찾아봐도 뭔가 해당 이슈 해결이 어려워보여서 임시로 이렇게 해결함
-      // setTimeout(() => {
-      //   let el = document.getElementsByClassName('tui-grid-editor-select-box-layer');
-      //   if (el.length !== 0) {
-      //     el[0].classList.add('tui-grid-layer-editing');
-      //   }
-      // }, 10);
-    });
-
     this.grid.on('editingFinish', (ev: any) => {
       const columnName = ev.columnName;
-      console.log(`columnName : ${columnName}`);
+      // console.log(`columnName : ${columnName}`);
       // // 수입이나 지출 항목에 대한 편집이 끝나면 잔고를 다시 계산해줍니다.
       if (columnName === 'income' || columnName === 'expenditure') {
         this.onCalculate();
