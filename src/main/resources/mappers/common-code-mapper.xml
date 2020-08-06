@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.ledgerangularspring.mapper.CommonCodeMapper">
+
+    <select id="selectCommonCodes" parameterType="String" resultType="com.example.ledgerangularspring.module.commoncode.CommonCodeModel">
+        SELECT * FROM common_code WHERE div_code = #{divCode}
+    </select>
+
+
+</mapper>
