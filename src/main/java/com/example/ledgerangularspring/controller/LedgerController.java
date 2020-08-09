@@ -2,6 +2,7 @@ package com.example.ledgerangularspring.controller;
 
 import com.example.ledgerangularspring.domain.LedgerVO;
 import com.example.ledgerangularspring.model.wrapper.EmptyResponseWrapper;
+import com.example.ledgerangularspring.model.wrapper.ListResponseWrapper;
 import com.example.ledgerangularspring.service.LedgerService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +18,14 @@ public class LedgerController {
         this.ledgerService = ledgerService;
     }
 
-    // TODO : ListResponseWrapper 로 인터페이스를 리팩토링해야 합니다.
+    /**
+     * ledger_master 테이블에서 해당 년도, 해당 월 회계 데이터를 조회합니다.
+     * @param year
+     * @param month
+     * @return
+     */
     @GetMapping("")
-    private List<LedgerVO> getMonthly(@RequestParam String year, @RequestParam String month){
+    private ListResponseWrapper getMonthly(@RequestParam String year, @RequestParam String month){
         System.out.println("getMonthly(" + year + ", " + month + ")");
         return this.ledgerService.getMonthly(year, month);
     }
