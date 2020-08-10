@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {CommonCode, Ledger} from './ledger.model';
 import Grid from 'tui-grid';
-import {NumberUtil} from '../util/number.util';
+import {NumberUtil} from '@app/util/number.util';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ledgerThemeOptions} from './grid/options';
 
