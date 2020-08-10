@@ -41,8 +41,9 @@ export class LedgerComponent implements OnInit {
       this.year = params.year;
       this.month = params.month;
 
-      this.http.get('/api/monthly', {params: httpParams}).subscribe((data: [Ledger]) => {
+      this.http.get('/api/monthly', {params: httpParams}).subscribe((res: any) => {
         const rows = [];
+        const data = res.data;
         data.map((ledger) => {
           const {id, sequence, stndDate, itemCode, itemName, note, income, expenditure, balance} = ledger;
           rows.push({
