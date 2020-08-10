@@ -1,0 +1,42 @@
+<input type="checkbox" id="check" />
+<!--header area start-->
+<header>
+  <label for="check">
+    <i class="fas fa-bars" id="sidebar_btn"></i>
+  </label>
+  <div class="left_area">
+    <h3>leager-spring-<span>anglar</span></h3>
+  </div>
+  <div class="right_area">
+    <a href="#" class="logout_btn">Logout</a>
+  </div>
+</header>
+<!--header area end-->
+<!--mobile navigation bar start-->
+<div class="mobile_nav">
+  <div class="nav_bar">
+    <i class="bars icon nav_btn" (click)="onMobileNavBarClick()"></i>
+  </div>
+  <div class="mobile_nav_items" *ngIf="isMobileDevice">
+    <a routerLink="/ledger"><i class="fas fa-desktop"></i><span>ledger</span></a>
+    <a routerLink="/toast"><i class="fas fa-cogs"></i><span>toast</span></a>
+    <a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
+    <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
+    <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
+    <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
+  </div>
+</div>
+<!--mobile navigation bar end-->
+<!--sidebar start-->
+<div class="sidebar">
+  <a routerLink="/ledger"><i class="fas fa-desktop"></i><span>ledger</span></a>
+  <a routerLink="/toast"><i class="fas fa-cogs"></i><span>toast</span></a>
+  <a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
+  <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
+  <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
+  <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
+</div>
+<!--sidebar end-->
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

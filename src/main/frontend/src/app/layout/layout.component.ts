@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-header',
-  templateUrl: './main-page.component.html',
-  styleUrls: ['./main-page.component.scss'],
+  templateUrl: './layout.component.html',
+  styleUrls: ['./layout.component.scss'],
 })
-export class MainPageComponent implements OnInit {
+export class LayoutComponent implements OnInit {
   isMobileDevice: boolean;
   constructor() {}
 
@@ -13,11 +13,11 @@ export class MainPageComponent implements OnInit {
     this.isMobileDevice = window.outerWidth < 780;
   }
 
-  toggleDeviceType(){
+  toggleDeviceType() {
     this.isMobileDevice = !this.isMobileDevice;
   }
 
-  onMobileNavBarClick(){
+  onMobileNavBarClick() {
     this.toggleDeviceType();
     console.log('onMobileNavBarClick');
     document.querySelectorAll('mobile_nav_items').forEach((ele) => {
