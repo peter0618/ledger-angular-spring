@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, HostListener} from '@angular/core';
 import {dummyRows} from '@app/routes/ledger/ledger.dummy';
 
 @Component({
@@ -26,8 +26,9 @@ export class ChartComponent implements OnInit {
   }
 
   single: any[];
-  view: any[] = [700, 400];
+  view: any[] = [window.innerWidth, 400];
   totalLabel: string;
+  innerWidth: number;
 
   // options
   gradient: boolean = true;
