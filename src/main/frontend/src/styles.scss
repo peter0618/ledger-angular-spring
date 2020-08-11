@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+  font-family: 'Nanum Gothic', sans-serif;
+}
+
+/* chart */
+
+/* 합계 */
+.advanced-pie-legend-wrapper .advanced-pie-legend .total-value {
+  margin-bottom: 20px;
+}
+
+/* 세부사항 */
+.advanced-pie-legend .legend-items-container {
+  height: 100px; // 높이
+
+  .legend-items {
+    height: 100%; // 높이
+
+    .legend-item {
+      margin-top: 20px;
+
+      .item-label {
+        margin-top: 0 !important;
+      }
+    }
+  }
+}

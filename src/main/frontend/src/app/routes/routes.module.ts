@@ -5,7 +5,9 @@ import {LayoutModule} from '@app/layout/layout.module';
 import {LedgerComponent} from '@app/routes/ledger/ledger.component';
 import {ToastSampleComponent} from '@app/routes/toast-sample/toast-sample.component';
 import {LayoutComponent} from '@app/layout/layout.component';
-import {LoginComponent} from './login/login.component';
+import {LoginComponent} from '@app/routes/login/login.component';
+import {ChartComponent} from '@app/routes/chart/chart.component';
+import {SharedModule} from '@app/shared/shared.module';
 
 const routes: Routes = [
   {
@@ -15,14 +17,15 @@ const routes: Routes = [
       {path: 'login', component: LoginComponent},
       {path: 'ledger', component: LedgerComponent},
       {path: 'toast', component: ToastSampleComponent},
+      {path: 'chart', component: ChartComponent},
       {path: '', redirectTo: '/ledger', pathMatch: 'full'},
     ],
   },
 ];
 
 @NgModule({
-  declarations: [LedgerComponent, ToastSampleComponent, LoginComponent],
-  imports: [LayoutModule, RouterModule.forRoot(routes), CommonModule],
+  declarations: [LedgerComponent, ToastSampleComponent, LoginComponent, ChartComponent],
+  imports: [LayoutModule, RouterModule.forRoot(routes), CommonModule, SharedModule],
   exports: [RouterModule],
 })
 export class RouteModule {}
