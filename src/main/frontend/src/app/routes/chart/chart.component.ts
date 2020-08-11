@@ -1,5 +1,6 @@
 import {Component, OnInit, HostListener} from '@angular/core';
 import {dummyRows} from '@app/routes/ledger/ledger.dummy';
+import {debounce} from '@app/shared/debounce.decorator';
 
 @Component({
   selector: 'app-chart',
@@ -15,11 +16,11 @@ export class ChartComponent implements OnInit {
       const {income, item, date, balance, expenditure} = row;
       return {
         name: item ? item : '',
-        value: income ? income : 0,
+        value: expenditure ? expenditure : 0,
         extra: {
           date: date ? date : '',
           balance: balance ? balance : '',
-          expenditure: expenditure ? expenditure : '',
+          expenditure: income ? income : '',
         },
       };
     });
@@ -50,5 +51,11 @@ export class ChartComponent implements OnInit {
 
   onDeactivate(data): void {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+  }
+
+  @HostListener('window:resize', ['$event'])
+  @debounce()
+  onResize(event) {
+    this.view = [window.innerWidth, 400];
   }
 }
