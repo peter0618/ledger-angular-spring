@@ -6,7 +6,7 @@ import Grid from 'tui-grid';
 import {NumberUtil} from '@app/util/number.util';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ledgerThemeOptions} from '@app/routes/ledger/grid/options';
-import {Row} from "tui-grid/types/store/data";
+import {Row} from 'tui-grid/types/store/data';
 
 @Component({
   selector: 'app-ledger',
@@ -267,29 +267,45 @@ export class LedgerComponent implements OnInit {
   }
 
   onDelete() {
-    console.log(`onDelete()`);
     const rows: Row[] = this.grid.getCheckedRows();
-    rows.map(row => {
-      console.log(row);
-    });
+    if (rows.length === 0) {
+      console.log('선택된 항목이 없습니다.');
+      // TODO : 토스트 메시지를 띄워줘야 함. (선택된 항목이 없습니다. 삭제할 항목을 선택해주세요.)
+      return;
+    }
 
     const el = this.deleteModal.nativeElement;
     el.classList.add('visible');
     el.classList.add('active');
-    console.log(el.classList);
+
+    // TODO : 다른 DOM 들 deactivate 시키기. 수평 중앙 정렬
   }
 
   onDeleteModalNo() {
-    console.log('no!!');
     const el = this.deleteModal.nativeElement;
     el.classList.remove('visible');
     el.classList.remove('active');
   }
 
   onDeleteModalYes() {
-    console.log('yes!!');
     const el = this.deleteModal.nativeElement;
     el.classList.remove('visible');
     el.classList.remove('active');
+
+    // TODO 1) : 삭제 중 프로그레스 바 띄움
+    const rows: Row[] = this.grid.getCheckedRows();
+    const ids = [];
+    rows.map((row) => {
+      if (row.id) {
+        console.log(row.id);
+        ids.push(row.id);
+      }
+    });
+    console.log(ids);
+    // TODO 2) 해당 ids 로 API에 삭제 요청
+
+    // TODO 3) API로 부터 삭제 완료 응답 받은 뒤 삭제 중 프로그레스 바 내리고 완료 토스트 메시지 보여주기
+
+    // TODO 4) 화면 refresh
   }
 }
