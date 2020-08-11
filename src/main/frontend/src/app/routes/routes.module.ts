@@ -15,6 +15,7 @@ const routes: Routes = [
       {path: 'login', component: LoginComponent},
       {path: 'ledger', component: LedgerComponent},
       {path: 'toast', component: ToastSampleComponent},
+      {path: '', redirectTo: '/ledger', pathMatch: 'full'},
     ],
   },
 ];
