@@ -12,4 +12,6 @@ public interface LedgerMapper {
     List<LedgerVO> read(@Param("date") String date);
 
     int insertLedger(@Param("param") List<LedgerVO> param);
+
+    int deleteLedger(@Param("id") String id);
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/monthly")
+@RequestMapping("/ledger")
 @RestController
 public class LedgerController {
 
@@ -24,7 +24,7 @@ public class LedgerController {
      * @param month
      * @return
      */
-    @GetMapping("")
+    @GetMapping()
     private ListResponseWrapper getMonthly(@RequestParam String year, @RequestParam String month){
         System.out.println("getMonthly(" + year + ", " + month + ")");
         return this.ledgerService.getMonthly(year, month);
@@ -35,9 +35,20 @@ public class LedgerController {
      * @param ledgerVOs
      * @return
      */
-    @PostMapping("")
+    @PostMapping()
     private EmptyResponseWrapper insertMonthly(@RequestBody List<LedgerVO> ledgerVOs){
         System.out.println("insertMonthly(ledgerVOs: " + ledgerVOs.toString() + ")");
         return this.ledgerService.insertMonthly(ledgerVOs);
+    }
+
+    /**
+     * ledger_master 테이블의 row 를 삭제합니다. (회계정보 단건 삭제)
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    private EmptyResponseWrapper deleteLedger(@PathVariable("id") String id){
+        System.out.println("deleteLedger(id : " + id + ")");
+        return this.ledgerService.deleteLedger(id);
     }
 }

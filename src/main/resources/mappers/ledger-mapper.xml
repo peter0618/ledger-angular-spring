@@ -72,4 +72,8 @@
         ,expenditure = values(expenditure)
         ,balance     = values(balance)
     </insert>
+
+    <delete id="deleteLedger" parameterType="String">
+        DELETE FROM ledger_master WHERE id = #{id}
+    </delete>
 </mapper>

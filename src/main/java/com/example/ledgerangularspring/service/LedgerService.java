@@ -47,5 +47,17 @@ public class LedgerService {
             return EmptyResponseWrapper.create().fail().code("500").message(e.getMessage());
         }
     }
+
+    public EmptyResponseWrapper deleteLedger(String id) {
+        long now = System.currentTimeMillis();
+        try {
+            int cnt = this.ledgerMapper.deleteLedger(id);
+            System.out.println("cnt : " + cnt);
+            // TODO : cnt = 0 인 경우에 대한 예외처리가 필요합니다.
+            return EmptyResponseWrapper.create().leadTime(System.currentTimeMillis() - now);
+        } catch (Exception e){
+            return EmptyResponseWrapper.create().fail().code("500").message(e.getMessage());
+        }
+    }
 }
 

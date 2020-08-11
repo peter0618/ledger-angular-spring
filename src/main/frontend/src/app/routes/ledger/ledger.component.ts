@@ -41,7 +41,7 @@ export class LedgerComponent implements OnInit {
       this.year = params.year;
       this.month = params.month;
 
-      this.http.get('/api/monthly', {params: httpParams}).subscribe((res: any) => {
+      this.http.get('/api/ledger', {params: httpParams}).subscribe((res: any) => {
         const rows = [];
         const data = res.data;
         data.map((ledger) => {
@@ -223,7 +223,7 @@ export class LedgerComponent implements OnInit {
 
     console.log(postData);
 
-    this.http.post('/api/monthly', postData).subscribe((data) => console.log(data));
+    this.http.post('/api/ledger', postData).subscribe((data) => console.log(data));
     // TODO : data 저장 성공 여부에 대한 메시지를 보여주는 로직이 추가되어야 합니다.
   }
 
