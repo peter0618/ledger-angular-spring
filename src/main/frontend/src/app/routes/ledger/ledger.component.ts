@@ -5,7 +5,7 @@ import {CommonCode, Ledger} from './ledger.model';
 import Grid from 'tui-grid';
 import {NumberUtil} from '@app/util/number.util';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ledgerThemeOptions} from './grid/options';
+import {ledgerThemeOptions} from '@app/routes/ledger/grid/options';
 
 @Component({
   selector: 'app-ledger',
@@ -23,7 +23,6 @@ export class LedgerComponent implements OnInit {
   constructor(private readonly http: HttpClient, private readonly router: Router, private route: ActivatedRoute) {}
 
   async ngOnInit(): Promise<void> {
-
     await this.initGrid();
 
     // TOAST UI 기본 설정

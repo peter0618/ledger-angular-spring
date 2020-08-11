@@ -5,7 +5,7 @@ import {dummyRows} from '../ledger/ledger.dummy';
 @Component({
   selector: 'app-toast-sample',
   templateUrl: './toast-sample.component.html',
-  styleUrls: ['./toast-sample.component.css'],
+  styleUrls: ['./toast-sample.component.scss'],
 })
 export class ToastSampleComponent implements OnInit {
   constructor() {}
