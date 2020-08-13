@@ -31,41 +31,21 @@ export class LedgerComponent implements OnInit {
     await this.initGrid();
 
     // TOAST UI 기본 설정
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(async (params) => {
       if (Object.keys(params).length === 0) {
         // query param 이 없는 경우에는 default 로 현재 날짜 기준 년/월을 셋팅하여 라우팅합니다.
         const today = moment();
         const year = today.format('YYYY');
         const month = today.format('MM');
 
-        this.router.navigate(['/ledger'], {queryParams: {year: year, month: month}});
+        await this.router.navigate(['/ledger'], {queryParams: {year: year, month: month}});
         return;
       }
 
-      let httpParams = new HttpParams().set('year', params.year).set('month', params.month);
       this.year = params.year;
       this.month = params.month;
+      await this.reloadData();
 
-      this.http.get('/api/ledger', {params: httpParams}).subscribe((res: any) => {
-        const rows = [];
-        const data = res.data;
-        data.map((ledger) => {
-          const {id, sequence, stndDate, itemCode, itemName, note, income, expenditure, balance} = ledger;
-          rows.push({
-            id,
-            sequence,
-            date: moment(stndDate).format('YYYY/MM/DD'),
-            // item: itemName,
-            item: itemCode,
-            note,
-            income,
-            expenditure,
-            balance,
-          });
-        });
-
-        this.grid.resetData(rows);
-      });
     });
   }
 
@@ -236,7 +216,7 @@ export class LedgerComponent implements OnInit {
   /**
    * 전체 행의 잔고를 다시 계산해줍니다.
    */
-  onCalculate() {
+  async onCalculate() {
     const rows: any[] = this.grid.getData();
     let prevBalance: number = 0;
     // prevBalance 의 default 값이 0 으로 설정되어 있기 때문에 첫번째 잔고는 "수입 - 지출"이 계산됩니다.
@@ -253,6 +233,9 @@ export class LedgerComponent implements OnInit {
     });
 
     this.grid.resetData(rows);
+    let httpParams = new HttpParams().set('year', this.year).set('month', this.month);
+    const res = await this.getData(httpParams);
+    console.log(res.data);
   }
 
   onBack() {
@@ -348,5 +331,31 @@ export class LedgerComponent implements OnInit {
   setLoaderDisplay(status: String) {
     const loaderElement = this.loader.nativeElement;
     loaderElement.style.display = status;
+  }
+
+  public async reloadData(){
+    let httpParams = new HttpParams().set('year', this.year).set('month', this.month);
+    const res = await this.getData(httpParams);
+    const rows = [];
+    const data = res.data;
+    data.map((ledger) => {
+      const {id, sequence, stndDate, itemCode, itemName, note, income, expenditure, balance} = ledger;
+      rows.push({
+        id,
+        sequence,
+        date: moment(stndDate).format('YYYY/MM/DD'),
+        // item: itemName,
+        item: itemCode,
+        note,
+        income,
+        expenditure,
+        balance,
+      });
+    });
+    this.grid.resetData(rows);
+  }
+
+  public async getData(httpParams: HttpParams): Promise<any> {
+    return await this.http.get('/api/ledger', {params: httpParams}).toPromise();
   }
 }
