@@ -59,5 +59,23 @@ public class LedgerService {
             return EmptyResponseWrapper.create().fail().code("500").message(e.getMessage());
         }
     }
+
+    /**
+     * ledger_master 테이블의 row 를 삭제합니다. (회계정보 다건 삭제)
+     * @param ids
+     * @return
+     */
+    public EmptyResponseWrapper deleteRows(List<String> ids) {
+        long now = System.currentTimeMillis();
+        try {
+            int cnt = this.ledgerMapper.deleteRows(ids);
+            System.out.println("cnt : " + cnt);
+            // TODO : cnt = 0 인 경우에 대한 예외처리가 필요합니다.
+            return EmptyResponseWrapper.create().leadTime(System.currentTimeMillis() - now);
+        } catch (Exception e){
+            System.out.println(e);
+            return EmptyResponseWrapper.create().fail().code("500").message(e.getMessage());
+        }
+    }
 }
 

@@ -76,4 +76,12 @@
     <delete id="deleteLedger" parameterType="String">
         DELETE FROM ledger_master WHERE id = #{id}
     </delete>
+
+    <delete id="deleteRows" parameterType="java.util.List">
+        DELETE FROM ledger_master WHERE id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>

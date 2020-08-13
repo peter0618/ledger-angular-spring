@@ -51,4 +51,16 @@ public class LedgerController {
         System.out.println("deleteLedger(id : " + id + ")");
         return this.ledgerService.deleteLedger(id);
     }
+
+
+    /**
+     * ledger_master 테이블의 row 를 삭제합니다. (회계정보 다건 삭제)
+     * @param ids
+     * @return
+     */
+    @DeleteMapping()
+    private EmptyResponseWrapper deleteRows(@RequestBody List<String> ids){
+        System.out.println("deleteRows(ids: " + ids.toString() + ")");
+        return this.ledgerService.deleteRows(ids);
+    }
 }
