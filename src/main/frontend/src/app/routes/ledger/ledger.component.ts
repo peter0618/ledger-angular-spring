@@ -45,7 +45,6 @@ export class LedgerComponent implements OnInit {
       this.year = params.year;
       this.month = params.month;
       await this.reloadData();
-
     });
   }
 
@@ -276,7 +275,7 @@ export class LedgerComponent implements OnInit {
     this.setMaskDisplay('none');
   }
 
-  onDeleteModalYes() {
+  async onDeleteModalYes() {
     const el = this.deleteModal.nativeElement;
     el.classList.remove('visible');
     el.classList.remove('active');
@@ -299,17 +298,15 @@ export class LedgerComponent implements OnInit {
       headers: new HttpHeaders({'Content-Type': 'application/json'}),
       body: ids,
     };
-    this.http.delete('/api/ledger', httpOptions).subscribe((res: any) => {
-      console.log(res);
-      if (res.success) {
-        console.log('삭제 성공!!');
-      }
+    const res: any = await this.http.delete('/api/ledger', httpOptions).toPromise();
+    console.log(res);
+    if (res.success) {
+      console.log('삭제 성공!!');
+    }
+    await this.reloadData();
 
-      // 3) API로 부터 삭제 완료 응답 받은 뒤 삭제 중 프로그레스 바 내리고 완료 토스트 메시지 보여주기
-      this.setLoaderDisplay('none');
-      this.setMaskDisplay('none');
-      // TODO 4) 화면 refresh
-    });
+    this.setLoaderDisplay('none');
+    this.setMaskDisplay('none');
   }
 
   onNoSelectionModalCheck() {
@@ -333,7 +330,10 @@ export class LedgerComponent implements OnInit {
     loaderElement.style.display = status;
   }
 
-  public async reloadData(){
+  /**
+   * 페이지 진입시 최초 실행하고, 데이터 삭제, 추가 뒤에도 실행됩니다.
+   */
+  public async reloadData() {
     let httpParams = new HttpParams().set('year', this.year).set('month', this.month);
     const res = await this.getData(httpParams);
     const rows = [];
