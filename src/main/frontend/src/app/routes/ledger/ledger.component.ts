@@ -16,6 +16,7 @@ import {Row} from 'tui-grid/types/store/data';
 export class LedgerComponent implements OnInit {
   @ViewChild('grid', {static: true}) myGrid: ElementRef;
   @ViewChild('deleteModal', {static: true}) deleteModal: ElementRef;
+  @ViewChild('saveModal', {static: true}) saveModal: ElementRef;
   @ViewChild('noSelectionModal', {static: true}) noSelectionModal: ElementRef;
   @ViewChild('mask', {static: true}) mask: ElementRef;
   @ViewChild('loader', {static: true}) loader: ElementRef;
@@ -188,11 +189,31 @@ export class LedgerComponent implements OnInit {
   }
 
   onSave() {
-    console.log('onSave()!');
-    // console.log(this.grid.getData());
+    console.log('onSave()');
+    this.setMaskDisplay('block');
+    const el = this.saveModal.nativeElement;
+    el.classList.add('visible');
+    el.classList.add('active');
+  }
+
+  onSaveModalNo() {
+    const el = this.saveModal.nativeElement;
+    el.classList.remove('visible');
+    el.classList.remove('active');
+    this.setMaskDisplay('none');
+  }
+
+  async onSaveModalYes() {
+    console.log(`onSaveModalYes()`);
+    const el = this.saveModal.nativeElement;
+    el.classList.remove('visible');
+    el.classList.remove('active');
+
+    // 1) 작업 처리중에 보여줄 로딩화면 띄우기
+    this.setLoaderDisplay('block');
 
     const postData = this.grid.getData().map((data: any) => {
-      console.log(typeof data.date);
+      // console.log(typeof data.date);
       return {
         id: data.id,
         sequence: data.sequence,
@@ -205,11 +226,18 @@ export class LedgerComponent implements OnInit {
         balance: data.balance,
       };
     });
+    // console.log(postData);
 
-    console.log(postData);
+    const res: any = await this.http.post('/api/ledger', postData).toPromise();
+    this.setLoaderDisplay('none');
+    this.setMaskDisplay('none');
 
-    this.http.post('/api/ledger', postData).subscribe((data) => console.log(data));
     // TODO : data 저장 성공 여부에 대한 메시지를 보여주는 로직이 추가되어야 합니다.
+    if(res.success){
+      console.log('회계 정보 저장 성공!');
+    } else {
+      console.log('회계 정보 저장 실패!');
+    }
   }
 
   /**
@@ -232,9 +260,6 @@ export class LedgerComponent implements OnInit {
     });
 
     this.grid.resetData(rows);
-    let httpParams = new HttpParams().set('year', this.year).set('month', this.month);
-    const res = await this.getData(httpParams);
-    console.log(res.data);
   }
 
   onBack() {

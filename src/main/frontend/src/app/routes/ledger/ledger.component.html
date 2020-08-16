@@ -28,6 +28,20 @@
 
     </div>
 </div>
+<div class="ui modal" #saveModal>
+    <div class="header">
+        현재 입력된 회계 정보를 저장할까요?
+    </div>
+    <div class="actions">
+        <div class="ui black deny button" (click)="onSaveModalNo()">
+            아니오
+        </div>
+        <div class="ui positive right labeled icon button" (click)="onSaveModalYes()">
+            네
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
 <div class="ui modal" #deleteModal>
     <div class="header">
         선택된 행을 삭제하시겠습니까?
