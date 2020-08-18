@@ -6,6 +6,7 @@ import Grid from 'tui-grid';
 import {NumberUtil} from '@app/util/number.util';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ledgerThemeOptions} from '@app/routes/ledger/grid/options';
+import {Row} from "tui-grid/types/store/data";
 
 @Component({
   selector: 'app-ledger',
@@ -14,6 +15,7 @@ import {ledgerThemeOptions} from '@app/routes/ledger/grid/options';
 })
 export class LedgerComponent implements OnInit {
   @ViewChild('grid', {static: true}) myGrid: ElementRef;
+  @ViewChild('deleteModal', {static: true}) deleteModal: ElementRef;
 
   private grid: Grid;
   private year;
@@ -76,10 +78,11 @@ export class LedgerComponent implements OnInit {
 
     this.grid = new Grid({
       el: this.myGrid.nativeElement,
-      width: 1120,
+      width: 1158,
       bodyHeight: 400,
       scrollX: false,
       scrollY: true,
+      rowHeaders: ['checkbox'],
       columns: [
         {
           header: '순서',
@@ -261,5 +264,32 @@ export class LedgerComponent implements OnInit {
     const year = monthAfter.format('YYYY');
     const month = monthAfter.format('MM');
     this.router.navigate(['/ledger'], {queryParams: {year: year, month: month}});
+  }
+
+  onDelete() {
+    console.log(`onDelete()`);
+    const rows: Row[] = this.grid.getCheckedRows();
+    rows.map(row => {
+      console.log(row);
+    });
+
+    const el = this.deleteModal.nativeElement;
+    el.classList.add('visible');
+    el.classList.add('active');
+    console.log(el.classList);
+  }
+
+  onDeleteModalNo() {
+    console.log('no!!');
+    const el = this.deleteModal.nativeElement;
+    el.classList.remove('visible');
+    el.classList.remove('active');
+  }
+
+  onDeleteModalYes() {
+    console.log('yes!!');
+    const el = this.deleteModal.nativeElement;
+    el.classList.remove('visible');
+    el.classList.remove('active');
   }
 }

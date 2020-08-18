@@ -26,6 +26,20 @@
 
     </div>
 </div>
+<div class="ui modal" #deleteModal>
+    <div class="header">
+        선택된 항목을 삭제하시겠습니까?
+    </div>
+    <div class="actions">
+        <div class="ui black deny button" (click)="onDeleteModalNo()">
+            아니오
+        </div>
+        <div class="ui positive right labeled icon button" (click)="onDeleteModalYes()">
+            네
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
 
 
 <div #grid></div>
@@ -33,5 +47,6 @@
     <button class="ui green button" (click)="onRowAdd()">행추가</button>
     <button class="ui teal button" (click)="onSave()">저장</button>
     <button class="ui yellow button" (click)="onCalculate()">잔고 재계산</button>
+    <button class="ui blue button" (click)="onDelete()">삭제</button>
 </div>
 

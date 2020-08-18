@@ -43,3 +43,7 @@
   width: 1120px;
   margin: auto;
 }
+
+.ui.modal {
+  width: 400px;
+}
