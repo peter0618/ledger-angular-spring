@@ -18,6 +18,7 @@ export class LedgerComponent implements OnInit {
   @ViewChild('deleteModal', {static: true}) deleteModal: ElementRef;
   @ViewChild('saveModal', {static: true}) saveModal: ElementRef;
   @ViewChild('noSelectionModal', {static: true}) noSelectionModal: ElementRef;
+  @ViewChild('dataProcessResultModal', {static: true}) dataProcessResultModal: ElementRef;
   @ViewChild('mask', {static: true}) mask: ElementRef;
   @ViewChild('loader', {static: true}) loader: ElementRef;
 
@@ -25,6 +26,7 @@ export class LedgerComponent implements OnInit {
   private year;
   private month;
   // private rows = [];
+  dataProcessResultMessage: string = '처리되었습니다.';
 
   constructor(private readonly http: HttpClient, private readonly router: Router, private route: ActivatedRoute) {}
 
@@ -228,15 +230,31 @@ export class LedgerComponent implements OnInit {
     });
     // console.log(postData);
 
-    const res: any = await this.http.post('/api/ledger', postData).toPromise();
-    this.setLoaderDisplay('none');
-    this.setMaskDisplay('none');
+    let res: any = null;
 
-    // TODO : data 저장 성공 여부에 대한 메시지를 보여주는 로직이 추가되어야 합니다.
-    if(res.success){
-      console.log('회계 정보 저장 성공!');
-    } else {
-      console.log('회계 정보 저장 실패!');
+    try {
+      // 2) 작업 처리
+      res = await this.http.post('/api/ledger', postData).toPromise();
+
+    } catch (e) {
+      console.log(e.toString());
+      this.dataProcessResultMessage = '실패하였습니다.';
+      console.log('회계정보 저장 에러');
+
+    } finally {
+      this.setLoaderDisplay('none');
+      if (res && res.success) {
+        console.log('회계 정보 저장 성공!');
+        this.dataProcessResultMessage = '처리되었습니다.';
+      } else {
+        console.log('회계 정보 저장 실패!');
+        this.dataProcessResultMessage = '실패하였습니다.';
+      }
+
+      // 3) 작업 처리 결과(성공/실패)에 대한 알림
+      const el2 = this.dataProcessResultModal.nativeElement;
+      el2.classList.add('visible');
+      el2.classList.add('active');
     }
   }
 
@@ -339,6 +357,25 @@ export class LedgerComponent implements OnInit {
     el.classList.remove('visible');
     el.classList.remove('active');
     this.setMaskDisplay('none');
+  }
+
+  async onDataProcessResultModalCheck() {
+    const el = this.dataProcessResultModal.nativeElement;
+    el.classList.remove('visible');
+    el.classList.remove('active');
+
+    this.setLoaderDisplay('block');
+
+    try {
+      await this.reloadData();
+      console.log('리로드 성공!');
+    } catch (e) {
+      console.log('리로드 실패!');
+      console.log(e.toString());
+    } finally {
+      this.setLoaderDisplay('none');
+      this.setMaskDisplay('none');
+    }
   }
 
   /**
