@@ -235,12 +235,10 @@ export class LedgerComponent implements OnInit {
     try {
       // 2) 작업 처리
       res = await this.http.post('/api/ledger', postData).toPromise();
-
     } catch (e) {
       console.log(e.toString());
       this.dataProcessResultMessage = '실패하였습니다.';
       console.log('회계정보 저장 에러');
-
     } finally {
       this.setLoaderDisplay('none');
       if (res && res.success) {
@@ -330,26 +328,39 @@ export class LedgerComponent implements OnInit {
     const ids = [];
     rows.map((row) => {
       if (row.id) {
-        console.log(row.id);
+        // console.log(row.id);
         ids.push(row.id);
       }
     });
     console.log(ids);
 
     // 2) 해당 ids 로 API에 삭제 요청
-    const httpOptions = {
-      headers: new HttpHeaders({'Content-Type': 'application/json'}),
-      body: ids,
-    };
-    const res: any = await this.http.delete('/api/ledger', httpOptions).toPromise();
-    console.log(res);
-    if (res.success) {
-      console.log('삭제 성공!!');
-    }
-    await this.reloadData();
+    let res: any = null;
+    try {
+      const httpOptions = {
+        headers: new HttpHeaders({'Content-Type': 'application/json'}),
+        body: ids,
+      };
+      res = await this.http.delete('/api/ledger', httpOptions).toPromise();
+    } catch (e) {
+      console.log(e.toString());
+      this.dataProcessResultMessage = '실패하였습니다.';
+      console.log('회계정보 삭제 실패');
+    } finally {
+      this.setLoaderDisplay('none');
+      if (res && res.success) {
+        console.log('회계정보 삭제 성공!');
+        this.dataProcessResultMessage = '처리되었습니다.';
+      } else {
+        console.log('회계정보 삭제 실패!');
+        this.dataProcessResultMessage = '실패하였습니다.';
+      }
 
-    this.setLoaderDisplay('none');
-    this.setMaskDisplay('none');
+      // 3) 작업 처리 결과(성공/실패)에 대한 알림
+      const el2 = this.dataProcessResultModal.nativeElement;
+      el2.classList.add('visible');
+      el2.classList.add('active');
+    }
   }
 
   onNoSelectionModalCheck() {
