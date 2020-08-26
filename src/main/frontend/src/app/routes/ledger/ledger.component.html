@@ -28,7 +28,7 @@
 </div>
 <div class="ui modal" #deleteModal>
     <div class="header">
-        선택된 항목을 삭제하시겠습니까?
+        선택된 행을 삭제하시겠습니까?
     </div>
     <div class="actions">
         <div class="ui black deny button" (click)="onDeleteModalNo()">
@@ -40,7 +40,17 @@
         </div>
     </div>
 </div>
-
+<div class="ui modal" #noSelectionModal>
+    <div class="header">
+        선택된 행이 없습니다.<br> 삭제할 행을 선택해주세요.
+    </div>
+    <div class="actions">
+        <div class="ui positive right labeled icon button" (click)="onNoSelectionModalCheck()">
+            확인
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
 
 <div #grid></div>
 <div id="bottom-buttons">

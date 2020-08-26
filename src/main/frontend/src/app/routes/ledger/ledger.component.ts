@@ -16,6 +16,7 @@ import {Row} from 'tui-grid/types/store/data';
 export class LedgerComponent implements OnInit {
   @ViewChild('grid', {static: true}) myGrid: ElementRef;
   @ViewChild('deleteModal', {static: true}) deleteModal: ElementRef;
+  @ViewChild('noSelectionModal', {static: true}) noSelectionModal: ElementRef;
 
   private grid: Grid;
   private year;
@@ -72,7 +73,7 @@ export class LedgerComponent implements OnInit {
     let res: any = await this.http.get('/api/common-codes/LEDGER01').toPromise();
     const data: [CommonCode] = res.data;
     data.map((commonCode) => {
-      console.log(commonCode.dtlCode, commonCode.dtlCodeName);
+      // console.log(commonCode.dtlCode, commonCode.dtlCodeName);
       listItems.push({text: commonCode.dtlCodeName, value: commonCode.dtlCode});
     });
 
@@ -269,8 +270,9 @@ export class LedgerComponent implements OnInit {
   onDelete() {
     const rows: Row[] = this.grid.getCheckedRows();
     if (rows.length === 0) {
-      console.log('선택된 항목이 없습니다.');
-      // TODO : 토스트 메시지를 띄워줘야 함. (선택된 항목이 없습니다. 삭제할 항목을 선택해주세요.)
+      const el = this.noSelectionModal.nativeElement;
+      el.classList.add('visible');
+      el.classList.add('active');
       return;
     }
 
@@ -307,5 +309,11 @@ export class LedgerComponent implements OnInit {
     // TODO 3) API로 부터 삭제 완료 응답 받은 뒤 삭제 중 프로그레스 바 내리고 완료 토스트 메시지 보여주기
 
     // TODO 4) 화면 refresh
+  }
+
+  onNoSelectionModalCheck() {
+    const el = this.noSelectionModal.nativeElement;
+    el.classList.remove('visible');
+    el.classList.remove('active');
   }
 }
