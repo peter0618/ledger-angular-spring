@@ -17,6 +17,7 @@ export class LedgerComponent implements OnInit {
   @ViewChild('grid', {static: true}) myGrid: ElementRef;
   @ViewChild('deleteModal', {static: true}) deleteModal: ElementRef;
   @ViewChild('noSelectionModal', {static: true}) noSelectionModal: ElementRef;
+  @ViewChild('mask', {static: true}) mask: ElementRef;
 
   private grid: Grid;
   private year;
@@ -269,6 +270,7 @@ export class LedgerComponent implements OnInit {
 
   onDelete() {
     const rows: Row[] = this.grid.getCheckedRows();
+    this.setMaskDisplay('block');
     if (rows.length === 0) {
       const el = this.noSelectionModal.nativeElement;
       el.classList.add('visible');
@@ -287,6 +289,7 @@ export class LedgerComponent implements OnInit {
     const el = this.deleteModal.nativeElement;
     el.classList.remove('visible');
     el.classList.remove('active');
+    this.setMaskDisplay('none');
   }
 
   onDeleteModalYes() {
@@ -308,6 +311,8 @@ export class LedgerComponent implements OnInit {
 
     // TODO 3) API로 부터 삭제 완료 응답 받은 뒤 삭제 중 프로그레스 바 내리고 완료 토스트 메시지 보여주기
 
+    this.setMaskDisplay('none');
+
     // TODO 4) 화면 refresh
   }
 
@@ -315,5 +320,15 @@ export class LedgerComponent implements OnInit {
     const el = this.noSelectionModal.nativeElement;
     el.classList.remove('visible');
     el.classList.remove('active');
+    this.setMaskDisplay('none');
+  }
+
+  /**
+   * Modal 을 띄울 때 전체를 덮는 반투명 막을 on/off 하는 함수입니다.
+   * @param status (none | block)
+   */
+  setMaskDisplay(status: String){
+    const maskElement = this.mask.nativeElement;
+    maskElement.style.display = status;
   }
 }
