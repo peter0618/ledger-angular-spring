@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {CommonCode, Ledger} from './ledger.model';
 import Grid from 'tui-grid';
 import {NumberUtil} from '@app/util/number.util';
@@ -298,7 +298,9 @@ export class LedgerComponent implements OnInit {
     el.classList.remove('visible');
     el.classList.remove('active');
 
-    // TODO 1) : 삭제 중 프로그레스 바 띄움
+    // 1) 작업 처리중에 보여줄 로딩화면 띄우기
+    this.setLoaderDisplay('block');
+
     const rows: Row[] = this.grid.getCheckedRows();
     const ids = [];
     rows.map((row) => {
@@ -308,13 +310,23 @@ export class LedgerComponent implements OnInit {
       }
     });
     console.log(ids);
-    // TODO 2) 해당 ids 로 API에 삭제 요청
 
-    // TODO 3) API로 부터 삭제 완료 응답 받은 뒤 삭제 중 프로그레스 바 내리고 완료 토스트 메시지 보여주기
+    // 2) 해당 ids 로 API에 삭제 요청
+    const httpOptions = {
+      headers: new HttpHeaders({'Content-Type': 'application/json'}),
+      body: ids,
+    };
+    this.http.delete('/api/ledger', httpOptions).subscribe((res: any) => {
+      console.log(res);
+      if (res.success) {
+        console.log('삭제 성공!!');
+      }
 
-    this.setMaskDisplay('none');
-
-    // TODO 4) 화면 refresh
+      // 3) API로 부터 삭제 완료 응답 받은 뒤 삭제 중 프로그레스 바 내리고 완료 토스트 메시지 보여주기
+      this.setLoaderDisplay('none');
+      this.setMaskDisplay('none');
+      // TODO 4) 화면 refresh
+    });
   }
 
   onNoSelectionModalCheck() {
@@ -328,8 +340,13 @@ export class LedgerComponent implements OnInit {
    * Modal 을 띄울 때 전체를 덮는 반투명 막을 on/off 하는 함수입니다.
    * @param status (none | block)
    */
-  setMaskDisplay(status: String){
+  setMaskDisplay(status: String) {
     const maskElement = this.mask.nativeElement;
     maskElement.style.display = status;
+  }
+
+  setLoaderDisplay(status: String) {
+    const loaderElement = this.loader.nativeElement;
+    loaderElement.style.display = status;
   }
 }
