@@ -18,6 +18,7 @@ export class LedgerComponent implements OnInit {
   @ViewChild('deleteModal', {static: true}) deleteModal: ElementRef;
   @ViewChild('noSelectionModal', {static: true}) noSelectionModal: ElementRef;
   @ViewChild('mask', {static: true}) mask: ElementRef;
+  @ViewChild('loader', {static: true}) loader: ElementRef;
 
   private grid: Grid;
   private year;
